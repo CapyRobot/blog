@@ -191,3 +191,13 @@ theme_config:
   utteranc_comments:
     enabled: true
     github_repo: CapyRobot/blog-comments
+
+  firebase_like_button:
+    enabled: true
+    apiKey: "AIzaSyBx3Q0YfEW0tRe_2k5vNidOwiTWXbHnNQ4"
+    authDomain: "capybot-4aaa8.firebaseapp.com"
+    databaseURL: "https://capybot-4aaa8-default-rtdb.firebaseio.com"
+    projectId: "capybot-4aaa8"
+    storageBucket: "capybot-4aaa8.appspot.com"
+    messagingSenderId: "1021049007736"
+    appId: "1:1021049007736:web:d21acf65cb18546df0478d"

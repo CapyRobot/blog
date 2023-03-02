@@ -74,4 +74,21 @@
 		</script>
 		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML' async></script>
 	<% } %>
+
+	<% if (theme.firebase_like_button.enabled && page.layout == "post") {%>
+    <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-database.js"></script>
+    <script>
+    const firebaseConfig = {
+      apiKey: "<%= theme.firebase_like_button.apiKey %>",
+      authDomain: "<%= theme.firebase_like_button.authDomain %>",
+      databaseURL: "<%= theme.firebase_like_button.databaseURL %>",
+      projectId: "<%= theme.firebase_like_button.projectId %>",
+      storageBucket: "<%= theme.firebase_like_button.storageBucket %>",
+      messagingSenderId: "<%= theme.firebase_like_button.messagingSenderId %>",
+      appId: "<%= theme.firebase_like_button.appId %>"
+    };
+    firebase.initializeApp(firebaseConfig);
+  </script>
+	<% } %>
 </head>

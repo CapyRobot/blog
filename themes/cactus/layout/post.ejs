@@ -16,6 +16,44 @@
   <div class="content" itemprop="articleBody">
     <%- page.content %>
   </div>
+
+  <% if (theme.firebase_like_button.enabled && page.id) {%>
+  <style>
+    .btn {
+      border: none;
+      background-color: inherit;
+      padding: 5px 5px;
+      font-size: inherit;
+      cursor: pointer;
+      display: inline-block;
+      color:inherit;
+    }
+    .btn:hover {color: aqua;}
+  </style>
+  <button id="likeButton" type="button" class="btn" onclick="like()">
+    <i class="fas fa-thumbs-up"></i>
+  </button> <span id="likeCountDisplay"></span>
+  <script>
+    function like() {
+      firebase.database().ref('/likes')
+        .child("<%- page.id %>")
+        .set(firebase.database.ServerValue.increment(1),
+          function (error) {
+            if (error) {
+              console.error("likeButton error: " + error);
+            }
+          });
+      document.getElementById("likeButton").disabled = true;
+      document.getElementById("likeButton").style.color = "aqua";
+    }
+    var likeCountRef = firebase.database().ref('likes/' + "<%- page.id %>");
+    likeCountRef.on('value', (snapshot) => {
+      const n = snapshot.val();
+      document.querySelector('#likeCountDisplay').innerHTML = n;
+    });
+  </script>
+  <% } %>
+
   <% if (page.enable_comments && theme.utteranc_comments.enabled) { %>
     <script src="https://utteranc.es/client.js"
         repo="<%- theme.utteranc_comments.github_repo %>"

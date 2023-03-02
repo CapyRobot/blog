@@ -159,6 +159,16 @@ utteranc_comments:
   enabled: false
   github_repo: user/repo
 
+firebase_like_button:
+  enabled: false
+  apiKey:
+  authDomain:
+  databaseURL:
+  projectId:
+  storageBucket:
+  messagingSenderId:
+  appId:
+
 # Fill in your Utterances data to enable Utterances comments
 utterances:
   enabled: false
