@@ -16,5 +16,15 @@
   <div class="content" itemprop="articleBody">
     <%- page.content %>
   </div>
+  <% if (page.enable_comments && theme.utteranc_comments.enabled) { %>
+    <script src="https://utteranc.es/client.js"
+        repo="<%- theme.utteranc_comments.github_repo %>"
+        issue-term="pathname"
+        label="blog-post-cmts"
+        theme="dark-blue"
+        crossorigin="anonymous"
+        async>
+    </script>
+  <% } %>
 </article>
 <%- partial('_partial/comments') %>

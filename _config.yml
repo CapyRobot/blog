@@ -187,3 +187,7 @@ theme_config:
     url: /images/Capybot-compressed.jpg
     gravatar: false
     grayout: true
+
+  utteranc_comments:
+    enabled: true
+    github_repo: CapyRobot/blog-comments

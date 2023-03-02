@@ -4,6 +4,7 @@ date: 2023-01-14
 tags:
  - behavior
  - robotics
+enable_comments: true
 ---
 
 <i class="fab fa-medium"></i> *This post was first published under [medium.com/@capybot](https://medium.com/@capybot/what-are-petri-nets-where-do-they-fit-in-the-robotics-stack-151d433af793).*

@@ -155,6 +155,10 @@ disqus:
   enabled: false
   shortname: cactus-1
 
+utteranc_comments:
+  enabled: false
+  github_repo: user/repo
+
 # Fill in your Utterances data to enable Utterances comments
 utterances:
   enabled: false
