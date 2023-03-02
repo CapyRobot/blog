@@ -6,7 +6,7 @@ tags:
  - robotics
 ---
 
-📝 *This post was first published under [medium.com/@capybot](https://medium.com/@capybot/what-are-petri-nets-where-do-they-fit-in-the-robotics-stack-151d433af793).*
+<i class="fab fa-medium"></i> *This post was first published under [medium.com/@capybot](https://medium.com/@capybot/what-are-petri-nets-where-do-they-fit-in-the-robotics-stack-151d433af793).*
 
 ![](/images/posts/pnet_intro/intro.webp "Petri Net")
 
