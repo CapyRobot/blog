@@ -202,3 +202,23 @@ theme_config:
     storageBucket: "capybot-4aaa8.appspot.com"
     messagingSenderId: "1021049007736"
     appId: "1:1021049007736:web:d21acf65cb18546df0478d"
+
+  # Customize the favicons.
+  # Cactus supports a limited set of the three most important icons:
+  #   - desktop: The classic favion.ico file.
+  #   - android: A 192x192 PNG file.
+  #   - apple:  A 180x180 PNG file.
+  # These can be generated with http://realfavicongenerator.net/
+  # Options:
+  #   - url: where the icon can be found
+  #   - gravatar: whether to create a favicon from your Gravatar
+  favicon:
+    desktop:
+      url: /images/favicon/favicon.ico
+      gravatar: false
+    android:
+      url: /images/favicon/favicon-192x192.png
+      gravatar: false
+    apple:
+      url: /images/favicon/apple-touch-icon.png
+      gravatar: false
