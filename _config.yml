@@ -103,7 +103,8 @@ theme: cactus
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
-  type: ''
+  type: firebase
+  id: "capybot-4aaa8"
 
 ###########################################################################
 # Theme override
