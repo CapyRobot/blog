@@ -9,6 +9,12 @@ tags:
 enable_comments: true
 ---
 
+1. ► {% post_link pnet_intro %}
+2. {% post_link pnet_sw %}
+3. {% post_link pnet_example %}
+
+---
+
 ![](/images/posts/pnet_intro/intro.svg "Petri Net")
 
 I am frequently asked whether Finite State Machines (FSMs) and Behavior Trees (BTs) should be used to model certain systems. However, the answer is not always clear-cut. Should I use one of them, both of them at different layers, or none? Modern systems often require multiple behavior layers that can be modeled using different languages. While FSMs and BTs are popular choices, there are other options available that may be more suitable depending on the specific use case and system characteristics. In this article, I will introduce Petri Nets, one of my personal favorite modeling languages. Though you may not have heard of it before, Petri Nets are widely used in various applications, sometimes subconsciously or under different names. If you’ve ever used an FSM, you have used a Petri Net, as FSMs are a subset of Petri Nets.

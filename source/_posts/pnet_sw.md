@@ -9,6 +9,12 @@ tags:
 enable_comments: true
 ---
 
+1. {% post_link pnet_intro %}
+2. ► {% post_link pnet_sw %}
+3. {% post_link pnet_example %}
+
+---
+
 ![](/images/posts/pnet_sw/intro.svg "Petri Net Controller.")
 
 Translating a Petri Net model into software is easy; all it needs are a few state objects to represent transitions and places and a basic interface for triggering transitions and querying the current marking of the net. However, using such a model to actively control the behavior of an actual autonomous system, e.g., an autonomous robot fleet, comes with a few conceptual dilemmas.
