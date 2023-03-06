@@ -5,6 +5,7 @@ date: 2023-01-14
 tags:
  - behavior
  - robotics
+ - petri nets
 enable_comments: true
 ---
 
