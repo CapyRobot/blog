@@ -9,17 +9,19 @@ tags:
 enable_comments: true
 ---
 
+1. {% post_link pnet_intro %}
+2. {% post_link pnet_sw %}
+3. ► {% post_link pnet_example %}
+
+---
+
 Following up on my last post {% post_link pnet_sw %}, here is an example of how to model and control a real-world system using a Petri Net-based controller.
 
 ![](/images/posts/pnet_example/intro.svg)
 
----
-
-NOTE
-* Many details in the use case description are, on purpose, omitted because this example is about high-level behavior control. Things such as which technology is being used to perform task ABC do not matter for the example.
-* This system could likely be optimized, but that is another topic.
-
----
+> **NOTE**
+> * Many details in the use case description are, on purpose, omitted because this example is about high-level behavior control. Things such as which technology is being used to perform task ABC do not matter for the example.
+> * This system could absolutely be optimized, but that is another topic.
 
 ## Use Case: Autonomous eCommerce Warehouse
 
@@ -28,7 +30,7 @@ Suppose an eCommerce chain decides to invest in robotics and automate one of its
 The two tasks the system must execute are:
 
 1. **Order execution**. An order is a list of items from the warehouse that must be packaged together.
-   1. An AMR must pick up the bins in the warehouse for all the items in the order and take them to a bin-picking station. Each bin contains hundreds of items, not only the items requested.
+   1. An AMR must pick up the bins in the warehouse for all the items in the order and take them to a bin-picking station. Each bin contains hundreds of the same item, not only the items requested.
    2. While the AMR awaits, the station will pick up the requested items from the input bins delivered by the AMR and place them in an output bin.
    3. After the bin-picking station is done, the AMR will pick up the input bins it initially delivered and return them to the warehouse.
    4. Another available AMR will pick up the order output bin and deliver it to a packing station.
@@ -53,19 +55,20 @@ The types of robots added to the system and associated skills are:
     * `pack(order_info)` - pack the order.
     * `notify_done(order_info)` - send a notification that the order is done.
 
-Finally, one extra system requirement is that AMRs can only proceed to execute a task if its charge level is above 20%.
+Finally, one extra system requirement is that AMRs can only proceed to execute a task if its charge level is above a predefined threshold.
 
 ## Modeling the System
 
-My favorite thing about Petri Nets is how easy it is to directly map the model components to single actions or resources. Actions (e.g., `charge robot`) are directly mapped to places, and resources (e.g., robot, station, order info) are directly mapped to tokens.
+My favorite thing about Petri Nets is how easy it is to directly map the model components to single actions or resources. Actions (e.g., `charge robot`) can be directly mapped to places, and resources (e.g., robot, station, order info) can be directly mapped to tokens. A task can then be broken down into a series of sequential actions (places) that the tokens pass through.
 
-*This is a good point to stop and take a few minutes to think about the problem and try to solve it yourself.*
+> **NOTE**
+> This is a good point to stop, take a few minutes to think about the problem, and try to solve it yourself.
 
 The second task is simpler, so probably a good starting point. The task itself can be represented by a token. The task can be broken down into smaller actions that use the available skills. The only needed resource to complete the task is available AMRs.
 
 ![](/images/posts/pnet_example/replenishment.svg "Petri Net model of the replenishment task.")
 
-In the same line, the order execution task can be modeled by the following. Note that the bin-picking station ownership is acquired while the robot is still picking bins because the `transport_bins` skill requires knowledge of the `dropoff_location`. This causes the station to be idle while waiting for the AMR. This could be avoided by breaking up this skill into separate pick-up and drop-off skills.
+In the same line, the order execution task can be modeled by the following. Note that the bin-picking station ownership is acquired while the robot is still picking up bins in the warehouse because the `transport_bins` skill requires knowledge of the `dropoff_location`. This causes the station to be idle while waiting for the AMR. This could be avoided by breaking up this skill into separate pick-up and drop-off skills.
 
 ![](/images/posts/pnet_example/order_execution.svg "Petri Net model of the order execution.")
 
@@ -83,7 +86,7 @@ The previous section resulted in a model for the system. Now, the model can be t
 
 ### Tokens
 
-Tokens carry information about each entity(s) it represents on the net. Suppose all skills are executed using, e.g., HTTP requests; the tokens should carry the info necessary info for sending the request to the correct location. By representing tokens using a generic dictionary-like structure, the following could represent the token structure used for all robots.
+Tokens carry information about each entity(s) it represents on the net. Suppose all skills are executed using, e.g., HTTP requests; the tokens should carry the necessary info for sending the request to the correct location. By representing token data using a generic dictionary-like structure, the following could represent the structure used for all robots.
 
 ```json
 {
@@ -122,7 +125,7 @@ The model makes it trivial to tie places to actions. Since the controller design
         "action": {
             "type": "HTTP/POST",
             "address": "... robot host:port ...",
-            "path": "",
+            "path": "/do_ABC",
         }
     },
     {
@@ -131,7 +134,7 @@ The model makes it trivial to tie places to actions. Since the controller design
 }
 ```
 
-However, note that many of the actions (skills) need entity-specific arguments. For example, in the action described by the config above, the HTTP request needs the robot address. One possible technique is to define special string patterns to tell the controller to get that parameter from the associate token. E.g., the pattern `@token{path}` means *"get the parameter from the token at the path `path`"*.
+However, note that many of the actions (skills) need token-specific arguments. For example, in the action described by the config above, the HTTP request needs the robot address which is different for each token. One possible technique is to define special string patterns to tell the controller to get that parameter from the associate token. E.g., the pattern `@token{data_key}` means *"get the parameter from the token data at `data_key`"*.
 
 The example above becomes:
 
@@ -140,7 +143,7 @@ The example above becomes:
     "place_id": "ABC",
     "action": {
         "type": "HTTP/POST",
-        "address": "@token{AMR/Addr}",
+        "address": "@token{AMR/Addr}", // = token["AMR"]["Addr"]
         "path": "",
     }
 }
@@ -152,23 +155,18 @@ The replenishment task branch becomes:
 
 ### Conditional Transitions
 
-The logic for checking if the AMR is charged is a special case where the action result decides which transition will be triggered. On success (charged), the robot goes directly to the `available AMRs` place; on failure, the robot must be charged first. Of course, this logic could be implemented in a thousand different ways. My solution to keep the controller design generic is to add one extra configuration parameter to the transition input arc specifying the acceptable action results for that arc. The example can then be implemented as shown on the left side of the figure below.
+The logic for checking if the AMR is charged is a special case where the action result decides which transition will be triggered. On success (charged), the robot goes directly to the `available AMRs` place; on failure, the robot must be charged first. Of course, this logic could be implemented in a thousand different ways. One is to keep the controller design generic is to add one extra configuration parameter to the transition input arc specifying the acceptable action results for that arc. A transition is then only enabled for tokens associated to the specified results. The example can then be implemented as shown on the left side of the figure below.
 
----
-
-NOTE
-
-Error handling, to be discussed in a future post, is not included in this example. However, this section describes a possible solution for catching and dealing with errors and failures. See the right side of the figure.
-
----
+> **Note**
+> Error handling, to be discussed in a future post, is not included in this example. However, this section describes a possible solution for catching and dealing with certain errors and failures. See the right side of the figure.
 
 ![](/images/posts/pnet_example/result_filter.svg "Conditional transitions. Charging example on the left, possible error handling on the right.")
 
 ## Final Remarks
 
-The main points this example aims to convey are:
+The example shows how to model a real-world system using a Petri Net, and a few important points for creating a behavior controller from the model. The main points this post aims to convey are:
 
-* Petri Nets are powerful tools for modeling distributed and large systems with many actors operating at the same time. Depending on the scale of the warehouse, hundreds of robots could have been controlled by this single model at a high-level.
+* Petri Nets are powerful tools for modeling distributed and large systems with many actors operating at the same time. Depending on the scale of the warehouse, hundreds of robots could have been controlled at a high-level by this single model.
 
 * When done properly, the resulting model is modular and scalable. Adding more robots is trivial, a single token. The two types of tasks modeled share resources, but are completely independent. Changing one should not affect the other. Also, adding a new type of task or process in parallel should be as simple as adding a new branch to the model.
 
