@@ -3,9 +3,9 @@ title: Designing a Petri Net Behavior Controller - Example
 id: pnet_example
 date: 2023-03-03
 tags:
- - behavior
- - robotics
- - petri nets
+ - Behavior
+ - Robotics
+ - Petri Net
 enable_comments: true
 ---
 

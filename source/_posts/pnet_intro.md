@@ -3,9 +3,9 @@ title: What are Petri Nets? Where do they fit in the Robotics Stack?
 id: pnet_intro
 date: 2023-01-14
 tags:
- - behavior
- - robotics
- - petri nets
+ - Behavior
+ - Robotics
+ - Petri Net
 enable_comments: true
 ---
 
