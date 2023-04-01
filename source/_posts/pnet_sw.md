@@ -29,23 +29,23 @@ Different from the last post, the Petri Net now is more than a mathematical mode
 
 ### A passive implementation
 
-The one thing it must always do is obvious, model a system and keep track of its current state. That is the most simple form of this software element; it has a representation of the model in the format of places, transitions, and tokens, and it provides an interface to query its current marking and an interface to trigger transitions.
+The one thing the net must always do is obvious, model a system and keep track of its current state. That is the most simple form of this software element; it has a representation of the model in the format of places, transitions, and tokens, and it provides an interface to query its current marking and an interface to trigger transitions.
 
 ![](/images/posts/pnet_sw/passive_diagram.svg "Diagram of a passive implementation.")
 
-In this approach, the decision process of what comes next is delegated to actors that use this element. The net does not decide which transitions to trigger or what actions to be performed; it is completely passive. If the system is complex enough such as a Petri Net was chosen over simpler modeling languages, it is expected that multiple actors are being modeled and controlled concurrently. These actors have to do that job themselves and, to do that, they likely need some global knowledge of the system. Not only the knowledge coming from the current state of the net but also knowledge about how triggering transitions could affect other actors also in the net. This approach works for some use cases, but requiring shared global knowledge of the system can be a huge disadvantage.
+In this approach, the decision process of what comes next is delegated to actors that use this element. The net does not decide which transitions to trigger or what actions to be performed; it is completely passive. If the system is complex enough such as a Petri Net was chosen over simpler modeling languages, it is expected that multiple actors are being modeled and controlled concurrently. These actors have to do that job themselves and, to do that, they likely need some global knowledge of the system. The actors need knowledge that not only includes knowledge coming from the current state of the net, but also knowledge about how triggering transitions could affect other actors in the net. This approach works for some use cases, but requiring shared global knowledge of the system can be a huge disadvantage.
 
 For a large robot fleet, how many of those entities have to be able to interpret the net and decide if transitions should be fired or not? If one of the machine's behavior changes, how many of the other entities are affected and must be adapted to handle those changes? These questions are not easy to answer. This approach can lead to systems that are not modular and not scalable.
 
 ### Adding a behavior controller
 
-Another approach is to have a single component to encapsulate this global behavior knowledge, which includes knowing what actions must be executed in each state and how to fire transitions. Let's call this element as the *behavior controller*.
+Another approach is to have a single component to encapsulate this global behavior knowledge, which includes knowing what actions must be executed in each state and how to fire transitions. Let's call this element the *behavior controller*.
 
 The main advantage of this approach is that it centralizes all global high-level behavior knowledge into a single component. Now, actors can be treated as a bag of skills or behaviors. For example, an Autonomous Mobile Robot could provide an API of high-level skills such as `move to landmark` and `go to charging station` that can be called by the behavior controller without the robot having any high-level planning knowledge.
 
 ![](/images/posts/pnet_sw/behavior_controller.svg "Diagram with an added behavior controller.")
 
-The controller must look at the net and decide which transition to fire and which actions must be executed. Dealing with transitions is usually where there is the most confusion, so that is discussed in a separate section below. Thankfully, Petri Nets make dealing with actions very simple. Remember that one of the main advantages of using this language is that it can make it very intuitive to tie places and tokens to actual components or processes of the system. For a well-designed model, places and actions can be directly mapped to one another. In fact, many places are named after an action, e.g., `moving from A to B`. This not only facilitates the implementation of the controller component, but it allows for scalable and generic designs.
+The controller must look at the net and decide which transition to fire and which actions must be executed. Dealing with transitions usually causes the most confusion, so that is discussed in a separate section below. Thankfully, Petri Nets make dealing with actions very simple. Remember that one of the main advantages of using this language is that it can make it very intuitive to tie places and tokens to actual components or processes of the system. For a well-designed model, places and actions can be directly mapped to one another. In fact, many places are named after an action, e.g., `moving from A to B`. This not only facilitates the implementation of the controller component, but it allows for scalable and generic designs.
 
 Each place can be tied to a set of actions to be executed when the place is occupied by a token (preferably a single action per place for simplicity). In implementation terms, an action could be represented by a callback function or a service request for example. Each of these actions should not have to be implemented by the controller module but delegated to the actor; making the implementation generic and not use-case specific. This could be achieved, for example, by using configuration files where a controller action definition is translated to, e.g., HTTP requests or ROS services.
 
@@ -74,9 +74,9 @@ Each place can be tied to a set of actions to be executed when the place is occu
 }
 ```
 
-Looking at the example above, different tokens representing different actors will pass through the `move_to_...` place. Certain parameters such as `ip:port` cannot be hard-coded into a config file since they are different for each actor. So, how can the action know the address of each robot? A section below shows how tokens can carry information, e.g., robot id and robot parameters. I found that a possible implementation is to ask the action to get parameter values from the token itself by using special keywords. `"ip:port": "@token{address}"` is telling the controller that the value for this parameter should be retrieved from the token associated with the action. Within the token data map, this info can be found under the key `address`.
+Looking at the example above, different tokens representing different actors will pass through the `move_to_...` place. Certain parameters such as `ip:port` cannot be hard-coded into a config file since they are different for each actor. So, how can the action know the address of each robot? The section below shows how tokens can carry information, e.g., robot id and robot parameters. I found that a possible implementation is to ask the action to get parameter values from the token itself by using special keywords. `"ip:port": "@token{address}"` is telling the controller that the value for this parameter should be retrieved from the token associated with the action. Within the token data map, this info can be found under the key `address`.
 
-Tokens will be further discussed later, getting back to places and actions. Now that the controller can execute actions, the next step deciding is to what to do next afterward. Here is a simple implementation example for executing actions.
+Tokens will be further discussed later, getting back to places and actions. Now that the controller can execute actions, the next step is deciding what to do next. Here is a simple implementation example for executing actions.
 
 ```c++
 // Epoch - to be executed periodically
@@ -112,13 +112,13 @@ For each robot in the place (represented by a token), the action calls a `get ch
 
 This is the topic that usually generates the most confusion and needs some care if it is desired to produce a modular and scalable implementation. 
 
-First, a note on the role of transitions. A transition triggering is an [atomic event](https://www.oxfordreference.com/display/10.1093/oi/authority.20110803095432251;jsessionid=D0FD769E95401062B016AB7EDB4172EB) that changes the state of the net; it is instantaneous. So, by this definition, it should never be tied to an action. However, it is a fair idea to tie a transition to conditions like *"arrived at B"*. This will not necessarily hurt the design, but I would advise against it. Translating that into software means some sort of callback function or memory access to assess the condition. Adding this extra complexity may not be hard, but it is unnecessary because places, as shown in the previous section, are already able to assess conditions using the same mechanisms implemented to execute actions. My personal preference is to leave transitions as simple as they can be; nameless and with no more information than arcs to input and output places.
+First, a note on the role of transitions. A transition triggering is an [atomic event](https://www.oxfordreference.com/display/10.1093/oi/authority.20110803095432251;jsessionid=D0FD769E95401062B016AB7EDB4172EB) that changes the state of the net; it is instantaneous. So, by this definition, it should never be tied to an action. However, it is fair to tie a transition to conditions like *"arrived at B"*. This will not necessarily hurt the design, but I would advise against it. Translating that into software means some sort of callback function or memory access to assess the condition. Adding this extra complexity may not be hard, but it is unnecessary because places, as shown in the previous section, are already able to assess conditions using the same mechanisms implemented to execute actions. My personal preference is to leave transitions as simple as they can be; nameless and with no more information than arcs to input and output places.
 
 *When to trigger one of them?*
 
-Considering all possible nets within the boundaries of the modeling language, there is no obvious answer to this question (well, at least I have not found one). So, the solution here presented is based on a couple of new definitions and constraints that a net must follow. However, any given model can be easily adapted to meet such constraints.
+Considering all possible nets within the boundaries of the modeling language, there is no obvious answer to this question (well, at least I have not found one). So, the presented solution is based on a couple of new definitions and constraints that a net must follow. However, any given model can be easily adapted to meet such constraints.
 
-Let's define a special type of transition, **Auto-Triggering (AT) transitions**. These are the ones that should always be instantaneously triggered by the controller once they are enabled. See the robot charging example below.
+Let's define a special type of transition, **Auto-Triggering (AT) transition**. These are the ones that should always be instantaneously triggered by the controller once they are enabled. See the robot charging example below.
 
 ![](/images/posts/pnet_sw/AT_transition_1.svg "Auto Triggering transitions - charging example.")
 
@@ -136,7 +136,7 @@ Let's make the charging example a bit more complex so `T1` is not an AT transiti
 
 ![](/images/posts/pnet_sw/AT_transition_2.svg "Auto Triggering transitions - charging example. Highlighted action.")
 
-Once the robot arrives at the charging location, it cannot simply trigger `T1` because it may not be enabled due to the lack of available chargers. A more complex software implementation can solve this issue. It could add state variables to track which actions (and associated tokens) are completed and use a more complicated logic for trying to trigger such transitions. However, is adding this complexity, even if not that hard, really needed? I argue that no.
+Once the robot arrives at the charging location, it cannot simply trigger `T1` because it may not be enabled due to the lack of available chargers. A more complex software implementation can solve this issue. It could add state variables to track which actions (and associated tokens) are completed and use a more complicated logic for trying to trigger such transitions. However, is adding this complexity, even if not that hard, really needed? I would argue no.
 
 The following constraint makes sure that such problematic transitions do not exist, and a net can always be easily adapted to obey.
 
@@ -152,7 +152,7 @@ See how our example is modified in the image below.
 
 Transition `T1` is now AT, and the new transition `T0` (non-AT) only has a single input place.
 
-My suggestion of modifying the net model to simplify the software implementation may have raised some eyebrows. But, even if the software element complexity was not a factor, I would still advocate for this rule. Following it also improves the model by getting rid of hidden states and making the model more appropriately expressive. If the net were to be used for observability, it makes clear the exact state of each actor being controlled. See the example presented above; the initial place `moving to charging location` could host tokens in two different states.
+My suggestion of modifying the net model to simplify the software implementation may raise some eyebrows. But, even if the software element complexity was not a factor, I would still advocate for this rule. Following it also improves the model by getting rid of hidden states and making the model more appropriately expressive. If the net were to be used for observability, it makes clear the exact state of each actor being controlled. See the example presented above; the initial place `moving to charging location` could host tokens in two different states.
 
 ## Encoding information within a token
 
@@ -186,6 +186,6 @@ One very important topic that is, on purpose, missing from this article is **err
 
 To recap, a Petri Net could keep track of the system state and be completely passive by delegating controlling decisions to anybody else using the element's interface. This approach does not usually work well since potentially delegating behavior decisions to multiple entities can get quite complex, not easily maintainable, and flat-out messy. Another approach is to include a behavior controller into this software element to take all high-level behavior decisions and to actively tell all entities what they should be doing. As shown here, this controller could be designed in quite a generic and reusable way.
 
-The wording high-level was used many times throughout the article. The behavior controller is said to deal with high-level behavior decisions because if a system is complex enough to justify the use of a Petri Net, the behavior architecture is likely to be split into multiple layers. The Petri Net is usually responsible for the most high-level layer. Other lower-level control layers more commonly use behavior-tree-like modeling languages. {% post_link pnet_intro 'See my previous post on Petri Nets' %} for more context on this topic.
+The phrase *high-level* was used many times throughout the article. The behavior controller is said to deal with high-level behavior decisions because if a system is complex enough to justify the use of a Petri Net, the behavior architecture is likely to be split into multiple layers. The Petri Net is usually responsible for the most high-level layer. Other lower-level control layers more commonly use behavior-tree-like modeling languages. {% post_link pnet_intro 'See my previous post on Petri Nets' %} for more context on this topic.
 
 Looking forward to reading your comments and questions! Let me know if you found this article interesting and helpful, and if you would like to read more on similar subjects.
