@@ -20,8 +20,9 @@ Following up on my last post {% post_link pnet_sw %}, here is an example of how 
 ![](/images/posts/pnet_example/intro.svg)
 
 > **NOTE**
-> * Many details in the use case description are, on purpose, omitted because this example is about high-level behavior control. Things such as which technology is being used to perform task ABC do not matter for the example.
-> * This system could absolutely be optimized, but that is another topic.
+> * Many details in the use case description are, on purpose, omitted because this example is about high-level behavior control. Things such as which technology is being used to perform each task do not matter for the example.
+> * This system could also be optimized, but that is another topic.
+> * Transitions are represented by black circles, not rectangles as in previous posts.
 
 ## Use Case: Autonomous eCommerce Warehouse
 
@@ -155,10 +156,10 @@ The replenishment task branch becomes:
 
 ### Conditional Transitions
 
-The logic for checking if the AMR is charged is a special case where the action result decides which transition will be triggered. On success (charged), the robot goes directly to the `available AMRs` place; on failure, the robot must be charged first. Of course, this logic could be implemented in a thousand different ways. One is to keep the controller design generic is to add one extra configuration parameter to the transition input arc specifying the acceptable action results for that arc. A transition is then only enabled for tokens associated to the specified results. The example can then be implemented as shown on the left side of the figure below.
+The logic for checking if the AMR is charged is a special case where the action result decides which transition will be triggered. On success (charged), the robot goes directly to the `available AMRs` place; on failure, the robot must be charged first. Of course, this logic could be implemented in a thousand different ways. One way to keep the controller design generic is to add one extra configuration parameter to the transition input arc specifying the acceptable action results for that arc. A transition is then only enabled for tokens associated to the specified results. The example can then be implemented as shown on the left side of the figure below.
 
 > **Note**
-> Error handling, to be discussed in a future post, is not included in this example. However, this section describes a possible solution for catching and dealing with certain errors and failures. See the right side of the figure.
+> Error handling will be discussed in a future post and is not addressed in this example. However, this section does describe a possible solution for catching and dealing with certain errors and failures. See the right side of the figure.
 
 ![](/images/posts/pnet_example/result_filter.svg "Conditional transitions. Charging example on the left, possible error handling on the right.")
 
@@ -166,8 +167,8 @@ The logic for checking if the AMR is charged is a special case where the action 
 
 The example shows how to model a real-world system using a Petri Net, and a few important points for creating a behavior controller from the model. The main points this post aims to convey are:
 
-* Petri Nets are powerful tools for modeling distributed and large systems with many actors operating at the same time. Depending on the scale of the warehouse, hundreds of robots could have been controlled at a high-level by this single model.
+* Petri Nets are powerful tools for modeling distributed and large systems with many actors operating at the same time. Depending on the scale of the warehouse, hundreds of robots could be controlled at a high level by this single model.
 
-* When done properly, the resulting model is modular and scalable. Adding more robots is trivial, a single token. The two types of tasks modeled share resources, but are completely independent. Changing one should not affect the other. Also, adding a new type of task or process in parallel should be as simple as adding a new branch to the model.
+* When done properly, the resulting model is modular and scalable. Adding more robots is as trivial as adding a single token. The two types of tasks modeled share resources, but are completely independent. Changing one should not affect the other. Also, adding a new type of task or process in parallel should be as simple as adding a new branch to the model.
 
 Looking forward to reading your comments and questions! Let me know if you found this article interesting and helpful, and if you would like to read more on similar subjects.
