@@ -7,6 +7,7 @@ tags:
  - Robotics
  - Petri Net
 enable_comments: true
+description: An example of how to model and control a real-world system using a Petri Net-based controller. The system in focus is an autonomous eCommerce warehouse. The post outlines the modeling of the system using Petri Nets, and discusses the transition from model to software.
 ---
 
 1. {% post_link pnet_intro %}

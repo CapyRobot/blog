@@ -7,6 +7,7 @@ tags:
  - Robotics
  - Petri Net
 enable_comments: true
+description: This post discusses the challenges of using a Petri Net model to control the behavior of an autonomous system. It explores different approaches to implementing a Petri Net-based behavior controller and aims to provide readers with the knowledge to implement their own controller in a clean and maintainable way.
 ---
 
 1. {% post_link pnet_intro %}

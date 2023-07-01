@@ -7,6 +7,7 @@ tags:
  - Robotics
  - Petri Net
 enable_comments: true
+description: This article discusses the use of Petri Nets for modeling complex distributed systems. It explores the advantages and disadvantages of Petri Nets and their application in different layers of the robotics stack.
 ---
 
 1. ► {% post_link pnet_intro %}
