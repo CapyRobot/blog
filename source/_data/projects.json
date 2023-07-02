@@ -3,10 +3,5 @@
        "name":"BehaviorNet",
        "url":"https://github.com/CapyRobot/BehaviorNet",
        "desc":"[WIP] Petri Net-Based Behavior Controller"
-    },
-    {
-       "name":"ProvableClaims",
-       "url":"https://github.com/CapyRobot/ProvableClaims",
-       "desc":"[WIP] A tool to match claims to proofs in a codebase"
     }
 ]
