@@ -19,7 +19,7 @@ Software engineering and programming are not the same.
 > — Software Engineering at Google
 
 
-# C++ is Complex, Software Engineering Does Not Like That
+## C++ is Complex, Software Engineering Does Not Like That
 
 C++ is a special case because of its complexity. It provides many ways to accomplish the same thing. And it also carries numerous pitfalls. C++ is such a powerful language, that developers have come up with infinite programming patterns. However, software engineering does not like complexity, and does not naturally get along with C++. Perhaps this is not visible in small projects or teams, but consider the challenges when dozens or even hundreds of engineers work on the same codebase comprising hundreds of thousands of lines.
 
@@ -40,7 +40,7 @@ I love C++, and it is my default language of choice. If used properly it will do
 Simplicity is key for good software engineering, and C++ by default is not simple.
 
 
-# Simplify It When Possible!
+## Simplify It When Possible!
 
 The learning journey of C++ often has multiple confidence peaks. The more you learn, the more you realize how much you do not know. And I believe that creates an interesting pattern. Experienced developers tend to limit themselves to subsets of the language and subsets of programming patterns that are sufficient enough and safe. This is an effective approach to simplify the language for easy and **maintainable** development.
 
@@ -55,7 +55,7 @@ Another problem is that writing complex code can be fun and, sometimes, beautifu
 > — Brian Kernighan
 
 
-# If Simplifying is not Possible, Encapsulate the Complex Bits
+## If Simplifying is not Possible, Encapsulate the Complex Bits
 
 If C++ is being used, good performance is likely important to the project. Also, more complex design patterns may be needed or may result in simpler code. In those cases, C++ will provide the right tools for the job, but the resulting code may not be easily legible or easy to understand.
 
@@ -64,7 +64,7 @@ Thankfully, C++ will also provide the tools to properly encapsulate and hide thi
 The extra time needed to properly do this for the complex bits (e.g., deeper design and code reviews) is in the long-term worth it.
 
 
-# Key Takeaways
+## Key Takeaways
 
 1. C++ is known for its vast complexity and offers numerous programming patterns. However, software engineering, which emphasizes simplicity and maintainability, may not readily align with the intricacies of C++.
 
