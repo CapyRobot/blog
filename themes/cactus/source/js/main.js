@@ -56,23 +56,27 @@ $(document).ready(function() {
      */
     if (menu.length) {
       $(window).on("scroll", function() {
-        var topDistance = menu.offset().top;
+        var scrollPosition = $(window).scrollTop();
+        let threshold = 10;
 
-        // hide only the navigation links on desktop
-        if (!nav.is(":visible") && topDistance < 50) {
+        // Show nav when near the top of the page
+        if (scrollPosition < threshold && !nav.is(":visible")) {
           nav.show();
-        } else if (nav.is(":visible") && topDistance > 100) {
+        } 
+        // Hide nav when scrolled down
+        else if (scrollPosition >= threshold && nav.is(":visible")) {
           nav.hide();
         }
 
-        // on tablet, hide the navigation icon as well and show a "scroll to top
-        // icon" instead
-        if ( ! $( "#menu-icon" ).is(":visible") && topDistance < 50 ) {
-          $("#menu-icon-tablet").show();
-          $("#top-icon-tablet").hide();
-        } else if (! $( "#menu-icon" ).is(":visible") && topDistance > 100) {
-          $("#menu-icon-tablet").hide();
-          $("#top-icon-tablet").show();
+        // Handle tablet-specific menu icons
+        if (!$("#menu-icon").is(":visible")) {
+          if (scrollPosition < threshold) {
+            $("#menu-icon-tablet").show();
+            $("#top-icon-tablet").hide();
+          } else if (scrollPosition > threshold * 2) {
+            $("#menu-icon-tablet").hide();
+            $("#top-icon-tablet").show();
+          }
         }
       });
     }
