@@ -31,7 +31,7 @@
     .btn:hover {color: aqua;}
   </style>
   <br>
-  <button id="likeButton" type="button" class="btn" onclick="like()">
+  <!-- <button id="likeButton" type="button" class="btn" onclick="like()">
     <i class="fas fa-thumbs-up"></i>
   </button> <span id="likeCountDisplay"></span>
   <script>
@@ -52,7 +52,7 @@
       const n = snapshot.val();
       document.querySelector('#likeCountDisplay').innerHTML = n;
     });
-  </script>
+  </script> -->
   <% } %>
 
   <% if (page.enable_comments && theme.utteranc_comments.enabled) { %>
