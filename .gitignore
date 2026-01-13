@@ -7,4 +7,4 @@ public/
 .deploy*/
 _multiconfig.yml
 .firebase/
-.vscode/
+.vscode/source/tools/

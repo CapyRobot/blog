@@ -1,6 +1,7 @@
 
         {
             "hosting": {
+                "site": "capybot-4aaa8",
                 "public": "public",
                 "ignore": [
                 "firebase.json",
@@ -8,5 +9,5 @@
                 "**/node_modules/**"
                 ]
             }
-        }      
+        }
     

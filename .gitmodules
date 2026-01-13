@@ -1,0 +1,3 @@
+[submodule "behaviornet-viz"]
+	path = behaviornet-viz
+	url = https://github.com/CapyRobot/BehaviorNetViz

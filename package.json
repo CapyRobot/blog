@@ -3,8 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build": "hexo generate",
-    "clean": "hexo clean",
+    "build:tools": "./bin/build-tools.sh",
+    "build:hexo": "hexo generate",
+    "build": "npm run build:tools && npm run build:hexo",
+    "clean": "hexo clean && rm -rf source/tools",
     "deploy": "hexo deploy",
     "server": "hexo server"
   },

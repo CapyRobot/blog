@@ -3,5 +3,10 @@
        "name":"BehaviorNet",
        "url":"https://github.com/CapyRobot/BehaviorNet",
        "desc":"[WIP] Petri Net-Based Behavior Controller"
+    },
+    {
+       "name":"BehaviorNet Editor",
+       "url":"/tools/behaviornet-viz/",
+       "desc":"Visual editor for BehaviorNet configs ([source](https://github.com/CapyRobot/BehaviorNetViz))"
     }
 ]
