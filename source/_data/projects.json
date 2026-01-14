@@ -5,8 +5,13 @@
        "desc":"[WIP] Petri Net-Based Behavior Controller"
     },
     {
-       "name":"BehaviorNet Editor",
-       "url":"/tools/behaviornet-viz/",
-       "desc":"Visual editor for BehaviorNet configs ([source](https://github.com/CapyRobot/BehaviorNetViz))"
+       "name":"BehaviorNetViz (web app)",
+       "url":"/tools/behaviornet-viz/?config=bn",
+       "desc":"WebGUI for BehaviorNet config and runtime ([source](https://github.com/CapyRobot/BehaviorNetViz))"
+    },
+    {
+       "name":"Petri-Net Web Editor",
+       "url":"/tools/behaviornet-viz/?config=pn",
+       "desc":"Skin version of BehaviorNetViz for generic Petri-Nets"
     }
 ]
