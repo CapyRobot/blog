@@ -8,7 +8,7 @@ subtitle:
 description: A platform for discussing topics in the intersection of Robotics and Software Engineering. Under-explored topics and unique actionable information.
 keywords:
 author: Eduardo Rocha
-author_website: https://rocha.one
+author_website: https://www.linkedin.com/in/eduardo-rocha-a26029107/
 language: en
 timezone: America/Chicago
 
@@ -144,7 +144,7 @@ theme_config:
     home: /
     about: /about/
     articles: /archives/
-    projects: https://github.com/capyrobot
+    # projects: https://github.com/capyrobot
 
   # Links to your social media accounts.
   # The keys should correspond to Fontawesome icon names

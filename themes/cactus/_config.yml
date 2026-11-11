@@ -17,7 +17,7 @@ nav:
   home: /
   about: /about1/
   articles: /archives/
-  projects: http://github.com/capyrobot
+  # projects: http://github.com/capyrobot
 
 
 # Links to your social media accounts.

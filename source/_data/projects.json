@@ -1,8 +1,8 @@
 [
     {
-       "name":"BehaviorNet",
-       "url":"https://github.com/CapyRobot/BehaviorNet",
-       "desc":"[WIP] Petri Net-Based Behavior Controller"
+       "name":"keel",
+       "url":"https://github.com/mcreduardo/keel",
+       "desc":"App components and dependencies in C++ - all checked in compile time"
     },
     {
        "name":"BehaviorNetViz (web app)",

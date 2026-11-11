@@ -4,7 +4,7 @@ id: llm_robotics_safety
 date: 2023-05-16
 tags:
  - Robotics
- - SW Engineering
+ - C++
 enable_comments: true
 description: This post addresses the problems posed by adversarial attacks on language models and highlights their impact on safety-critical applications, particularly in the realm of robotics. It emphasizes the grave consequences of mistakes when using LLMs as user interfaces and expresses concerns about the growing proliferation of such applications.
 ---

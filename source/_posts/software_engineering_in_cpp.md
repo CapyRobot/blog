@@ -3,7 +3,7 @@ title: Programming in C++ is hard, Software Engineering in C++ is even harder
 id: software_engineering_in_cpp
 date: 2023-06-26
 tags:
- - SW Engineering
+ - C++
 enable_comments: true
 description: It is natural to assume that proficiency in C++ directly translates to the ability to develop software in the language. However, the two are not always synonymous. The complexities of C++ pose challenges for software engineering. Simplicity is important for maintainability and long-term success in software engineering.
 ---

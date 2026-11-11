@@ -3,7 +3,7 @@ title: The Best Way to Share Data Across Threads? Don't.
 id: isolation_via_ownership_transfer
 date: 2026-01-01
 tags:
- - SW Engineering
+ - C++
 enable_comments: true
 description: A deep dive into using C++ move semantics for thread safety, the "SealedPtr" pattern to prevent misuse, and zero-allocation recycling queues.
 ---

@@ -3,9 +3,9 @@ title: C++ will be safe one day, but it will be too late
 id: safe_cpp_is_dead
 date: 2024-12-31
 tags:
- - SW Engineering
+ - C++
 enable_comments: true
-description: C++ will eventually gain safer features, but Rust’s memory safety model is already here; and flourishing. In this article, we explore why C++ might arrive too late to the secure-systems party, despite its vast legacy ecosystem.
+description: C++ will eventually gain safer features, but Rust’s memory safety model is already here; and flourishing. In this article, we explore why C++ might arrive too late to the safe-by-default party, despite its vast legacy ecosystem.
 ---
 
 Over the past few years, C++ has been under pressure from just about everyone concerned with memory safety. The NSA [openly warns](https://www.nsa.gov/Press-Room/Press-Releases-Statements/Press-Release-View/article/3608324/us-and-international-partners-issue-recommendations-to-secure-software-products/#:~:text=Recommended%20memory%20safe%20programming%20languages,integrating%20them%20into%20their%20workflows.) about using C++ while putting it in the same bucket with C as memory-**un**safe languages. Rust, on the other hand, sells itself as memory-safe by default. That’s pretty compelling if your top priority is to avoid the entire category of vulnerabilities tied to manual memory management.

@@ -1,10 +1,8 @@
 ---
-title: about
+title: About
 date: 2023-03-01 17:19:50
 ---
 
-I am [Eduardo Rocha](https://www.rocha.one/), currently a Senior System Software Engineer working at Nvidia on Autonomous Vehicles. I like to write about topics I find interesting and that I think could help someone else; no particular focus besides being related to robotics or software engineering.
+I am **Eduardo Rocha** ([LinkedIn](https://www.linkedin.com/in/eduardo-rocha-a26029107/)), a System Software Engineer productizing autonomous vehicles at NVIDIA. I currently work on lifecycle management and data distribution for all sensors in the NVIDIA [NDAS](https://www.nvidia.com/en-us/solutions/autonomous-vehicles/) platform. I am also an active member of the ISO C++ Standards Committee (WG21) and INCITS, the U.S. National Body for C++ standardization. 
 
-Looking to bring fresh perspectives and insights to the table, delving into under-explored topics and providing unique, actionable information.
-
-Random, but useful, stuff.
+I write about C++, robotics systems, and the messy middle between language design and production software — usually the parts that don’t show up in tutorials.

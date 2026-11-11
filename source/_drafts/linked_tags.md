@@ -3,7 +3,7 @@ title: LinkedTags - in-sync duplication
 id: linked_tags
 date: 2023-03-09
 tags:
- - SW Engineering
+ - C++
 enable_comments: true
 ---
 
