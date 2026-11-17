@@ -10,6 +10,8 @@
       <%- partial('_partial/post/tag') %>
       <br>
       <%- readingTime(page.content, 'min. read', 200) %>
+      <br>
+      <a href="<%- url_for('/ai-usage/') %>">AI Usage Disclaimer</a>
     </div>
   </header>
   <%- partial('_partial/post/gallery') %>
