@@ -8,7 +8,10 @@ enable_comments: true
 description: Why C++ applications grow god classes, and how to structure one instead. Components with a lifecycle, a composition root in main(), and dependencies declared as types that the compiler checks, so the init and shutdown order is derived for you. Introduces keel, a single-header C++20 library built on these ideas.
 ---
 
-**I never liked wiring an application by hand.**
+1. ► {% post_link keel_1 %}
+2. {% post_link keel_2 %}
+
+---
 
 Every C++ application I've worked on had to answer the same questions: who creates the parts, who wires them together, and in which order they come up and go down. And every time, the answer was written by hand: a constructor that builds everything, a list of `init()` calls, a shutdown sequence that someone once got wrong and patched with a comment.
 
@@ -24,11 +27,11 @@ If you've used dependency injection elsewhere, you know the vocabulary: a compos
 
 My design ([keel](https://github.com/mcreduardo/keel)) sits in the middle ground between wiring by hand and a DI framework. Its subject is **the runtime structure of a production C++ application**: components with a lifecycle, one composition root, dependencies declared as types and checked by the compiler, and startup and shutdown order derived from the dependency graph instead of written by hand. This post sets up the problem and the core structure.
 
-If you've lived through a god class, skim sections 1 and 2; the argument starts in section 3.
+If you've lived through a god class, skim the following two sections; the argument starts at "What the Literature Gives Us".
 
 ---
 
-## 1. Every Application Starts as `main()`
+## Every Application Starts as `main()`
 
 Let's use `telemetryd` as an example, a small telemetry agent. It reads samples from a few devices, aggregates them, and exports a summary over the network. Think of the process on a robot, a vehicle or an edge box that ships sensor health to a backend.
 
@@ -55,7 +58,7 @@ Six months later `main()` is 600 lines, with lambdas capturing half the stack, a
 
 **That refactor is the moment the god class becomes a threat.** And it doesn't feel like a mistake. It feels like structure. Everything has a home now.
 
-## 2. Anatomy of a God Class
+## Anatomy of a God Class
 
 Here is the `Application` that comes out of that refactor. I have simplified it, but not by much. You have probably seen this class, maybe under a different name.
 
@@ -152,7 +155,7 @@ Yes. The issues pointed out above are easy to spot and can be fixed. Split the s
 
 But it's manual work, and it stays manual. Every new component or dependency means editing the wiring, and keeping the order right is on you for as long as the code lives. **keel was born exactly because I didn't want to do that work when it isn't needed, or maintain it afterwards.**
 
-## 3. What the Literature Gives Us, and What It Doesn't
+## What the Literature Gives Us, and What It Doesn't
 
 When I went looking for "how to structure a C++ application", I found two bookshelves that rarely talk to each other.
 
@@ -179,7 +182,7 @@ Two more ideas I borrow and want to credit up front:
 
 The gap, as far as I can tell: **nobody starts from `main()` and builds up to the runtime structure of a production C++ application.** That's what this series tries to do.
 
-## 4. Components: The Unit of Structure
+## Components: The Unit of Structure
 
 The first idea is to give each subsystem its own class, with a lifecycle, instead of making it a member of something bigger.
 
@@ -232,7 +235,7 @@ private:
 
 `start()` and `stop()` are optional. Some applications need them, many don't, and this post only uses `init()` and `deinit()`.
 
-## 5. The Composition Root: `main()` Only Wires
+## The Composition Root: `main()` Only Wires
 
 The second idea: **one place creates every component, lists them, and owns them all. Nothing else creates components.** That place is the composition root, and it's usually `main()`.
 
@@ -273,11 +276,11 @@ Notice the order of that list. `Exporter` comes first and `CliArgs` last, which 
 [info] logger down
 ```
 
-The worker pool shuts down before the logger, every time, no matter how anybody reorders anything. The bug from section 2 is gone, and nobody had to be careful: the order is no longer written by hand.
+The worker pool shuts down before the logger, every time, no matter how anybody reorders anything. The god class's shutdown bug is gone, and nobody had to be careful: the order is no longer written by hand.
 
 How keel derives that order is the subject of the next post. In this one, the important part is where the order comes *from*: the dependencies. Which brings us to the core idea.
 
-## 6. Dependencies as Types
+## Dependencies as Types
 
 Components need each other. `Exporter` needs the `Aggregator` and the `Logger`. How does it get to them without `#include "application.h"` and the keys to everything?
 
@@ -369,7 +372,7 @@ The usual alternative is to pass dependencies to the constructor: `Exporter(Aggr
 - Something has to call the constructors in the right order. You can write that order
   by hand in `main()`, and with a few components it can be perfectly clean. But it's code you don't need: the order is already implied by the dependencies, and a hand-written copy is one more thing to keep in sync. Every new component or dependency means editing it, and when someone gets it wrong, it still compiles. keel derives the order from the declarations instead, so it can't drift.
 
-## 7. You Don't Need a Framework for This
+## You Don't Need a Framework for This
 
 You can apply all of this without keel, or any other library. For years I rewrote the core on every project instead of reusing it.
 
@@ -392,9 +395,9 @@ Everything else is bookkeeping: a registry of components by type, `init()` in or
 
 If you'd rather see all of it, read [keel](https://github.com/mcreduardo/keel). It is one header, and simple enough to read. Copy the pieces you want; the MIT license lets you.
 
-One warning if you build your own. The easy version keeps the order of the lines. Put the logger below the worker pool, and the pool initializes before the logger it uses; on shutdown the logger goes first, while the pool's threads still log. Nothing notices. That's the bug from section 2, rebuilt in a cleaner-looking codebase. **The order is a graph, not a list.**
+One warning if you build your own. The easy version keeps the order of the lines. Put the logger below the worker pool, and the pool initializes before the logger it uses; on shutdown the logger goes first, while the pool's threads still log. Nothing notices. That's the god class's shutdown bug, rebuilt in a cleaner-looking codebase. **The order is a graph, not a list.**
 
-## 8. `telemetryd`, Before and After
+## `telemetryd`, Before and After
 
 Put the two versions side by side.
 
@@ -425,7 +428,7 @@ A few things became easy that weren't before:
 - Testing `Aggregator` means composing a smaller application: `Aggregator`, plus fake
   devices and a small worker pool. The composition is checked like any other.
 
-## 9. When Not to Do This
+## When Not to Do This
 
 Structure has a cost. Here's when I wouldn't pay it.
 
@@ -437,7 +440,7 @@ Structure has a cost. Here's when I wouldn't pay it.
 - When you already have a framework that owns the application. Qt, Unreal and friends have
   their own models of objects and lifetimes.
 
-## 10. Key Takeaways
+## Key Takeaways
 
 1. **The god class is a structure problem, not a discipline problem.** It wins because
    ownership, wiring and behavior all end up in one place. Experience alone doesn't prevent it.
@@ -447,8 +450,7 @@ Structure has a cost. Here's when I wouldn't pay it.
    is the architecture, readable in one screen.
 4. **Dependencies as types** put each component's needs on its class line, where the
    compiler checks them and reviewers see them. A service locator with declared, checked dependencies doesn't hide anything.
-5. **The order is a graph, not a list.** Writing it by hand is the bug from section 2,
-   waiting to happen.
+5. **The order is a graph, not a list.** Writing it by hand is the god class's shutdown bug, waiting to happen.
 
 You can build all of this yourself. But I've already done it for you, with what the core leaves out: the composition checked at compile time, the order derived from the graph, and one clear error per mistake. That's [keel](https://github.com/mcreduardo/keel), one header.
 
